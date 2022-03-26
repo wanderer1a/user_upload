@@ -49,3 +49,15 @@ Place users.csv file to [X]:\some\directory (could be [X]:\some\another\director
 <li>
 Run in a console "cd [X]:\some\directory" and run script with command "python .\user_upload.py".
 </li>
+
+<p>
+usage (separate value from directive name with space):
+  --file [csv file name] – this is the name of the CSV to be parsed
+  --create_table – this will cause the MySQL "users" table to be built (and no further
+    action will be taken)
+  --dry_run – this will be used with the --file directive in case we want to run the script but notinsert into the DB. All other functions will be executed, but the database won't be altered
+  -u [user] – MySQL username
+  -p [password] – MySQL password
+  -h [hostname or IP address] – MySQL host
+  --help – which will output the above list of directives with details.
+</p>

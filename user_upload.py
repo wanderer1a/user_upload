@@ -20,9 +20,9 @@ help_message = 'CSV file must contain user data and have three columns: name, ' 
                'case we want to run the script but not' \
                'insert into the DB. All other functions will be executed, ' \
                'but the database won\'t be altered\n' \
-               '  -u – MySQL username\n' \
-               '  -p – MySQL password\n' \
-               '  -h – MySQL host\n' \
+               '  -u [user] – MySQL username\n' \
+               '  -p [password] – MySQL password\n' \
+               '  -h [hostname or IP address] – MySQL host\n' \
                '  --help – which will output the above list of directives with ' \
                'details.\n'
 table_name = 'users'
