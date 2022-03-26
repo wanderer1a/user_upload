@@ -3,13 +3,11 @@ import mysql.connector #pip install mysql-connector-python-rf
 import csv
 import re
 
-info_message = 'File uploader version 1.0\n' \
+info_message = 'File uploader version 1.0.1\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'Run the script with --help key to get help\n'
 bye_message = 'Now exit. Bye.'
-help_message = 'File uploader version 0.1\n' \
-               'Uploads from CSV file to MySQL Database named "user_upload"\n' \
-               'CSV file must contain user data and have three columns: name, ' \
+help_message = 'CSV file must contain user data and have three columns: name, ' \
                'surname, email\n' \
                'usage (separate value from directive name with space):\n' \
                '  --file [csv file name] – this is the name of the CSV to be ' \
@@ -18,10 +16,9 @@ help_message = 'File uploader version 0.1\n' \
                'built (and no further\n' \
                '    action will be taken)\n' \
                '  --dry_run – this will be used with the --file directive in ' \
-               'case we want to run the script but not\n' \
-               '    insert into the DB. All other functions will be executed, ' \
+               'case we want to run the script but not' \
+               'insert into the DB. All other functions will be executed, ' \
                'but the database won\'t be altered\n' \
-               '  -db – MySQL DataBase name\n' \
                '  -u – MySQL username\n' \
                '  -p – MySQL password\n' \
                '  -h – MySQL host\n' \
@@ -76,8 +73,29 @@ def dry_run(in_db_settings, in_file_settings):
     print('[MODE] dry_run')
 
 
+def check_db_settings(in_db_settings):
+    is_settings = True
+    if '-h' in in_db_settings.keys():
+        pass
+    else:
+        is_settings = False
+    if '-u' in in_db_settings.keys():
+        pass
+    else:
+        is_settings = False
+    if '-p' in in_db_settings.keys():
+        pass
+    else:
+        is_settings = False
+    return is_settings
+
+
 def create_table(in_db_settings, in_file_settings):
-    print(f'Creating Table {table_name} for {in_db_settings}, db: {db_name}')
+    print('[MODE] create_table')
+    if not check_db_settings(in_db_settings):
+        print(f'[ERROR] db_settings is bad: {in_db_settings}')
+        print_bye()
+    print(f'[INFO] Creating Table {table_name} for {in_db_settings}, db: {db_name}')
     try:
         db = mysql.connector.connect(
             host=in_db_settings['-h'],
@@ -91,10 +109,8 @@ def create_table(in_db_settings, in_file_settings):
         cursor.execute('CREATE TABLE IF NOT EXISTS ' + table_name +
                        ' (name varchar(64), '
                        'surname varchar(64), '
-                       'email varchar(64))')
-        cursor.execute('CREATE UNIQUE INDEX '
-                       'index_email ON ' + table_name +
-                       ' (email);')
+                       'email varchar(64),'
+                       'UNIQUE (email))')
     except mysql.connector.Error as err:
         error_message(err)
     else:
@@ -126,6 +142,17 @@ def insert_user(in_db_settings, in_data):
 
 
 def csv_processing(in_file_settings):
+    '''
+    :param in_file_settings:
+    :return:
+
+    Processing of csv with 3 columns (name, sirname, email).
+    Titles name, sirname.
+    Translates email to a lower case
+    Check email trowgh regexp
+    '''
+    if not is_dry_run:
+        print('[MODE] csv processing and insert to database')
     email_regex = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b")
     try:
         with open(in_file_settings['--file']) as csv_file:
