@@ -7,9 +7,7 @@ info_message = 'File uploader version 1.0\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'Run the script with --help key to get help\n'
 bye_message = 'Now exit. Bye.'
-help_message = 'File uploader version 0.1\n' \
-               'Uploads from CSV file to MySQL Database named "user_upload"\n' \
-               'CSV file must contain user data and have three columns: name, ' \
+help_message = 'CSV file must contain user data and have three columns: name, ' \
                'surname, email\n' \
                'usage (separate value from directive name with space):\n' \
                '  --file [csv file name] – this is the name of the CSV to be ' \
