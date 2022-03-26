@@ -30,6 +30,7 @@ help_message = 'File uploader version 0.1\n' \
                '  --help – which will output the above list of directives with ' \
                'details.\n'
 table_name = 'users'
+db_name = 'user_upload'
 
 
 def print_help(in_db_settings, in_file_settings):
@@ -53,7 +54,7 @@ def create_table(in_db_settings, in_file_settings):
             host=in_db_settings['-h'],
             user=in_db_settings['-u'],
             passwd=in_db_settings['-p'],
-            database=in_db_settings['-db'],
+            database=db_name,
             raise_on_warnings=True
         )
         cursor = db.cursor()
@@ -100,22 +101,26 @@ def set_file(arg, val):
 
 if __name__ == '__main__':
     args = sys.argv
+
     db_settings = {}
     db_settings_routines = {
-        '-db': set_db,
+        #'-db': set_db,
         '-h': set_host,
         '-u': set_user,
         '-p': set_password
     }
+
     file_settings = {}
     file_settings_routines = {
         '--file': set_file
     }
+
     actions = {
         '--help': print_help,
         '--create_table': create_table,
         '--dry_run': dry_run
     }
+
     for argument in args[1:]:
         '''
         Find and launch functions from db_settings_routines to create
