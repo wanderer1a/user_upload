@@ -1,10 +1,13 @@
 import sys
 #pip install mysql-connector-python-rf
-import mysql.connector as mysql
+from errno import errorcode
+import mysql.connector
 
 info_message = 'File uploader version 0.1\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'To get help run the script with --help key\n'
+
+bye_message = 'Now exits. Bye.'
 
 help_message = 'File uploader version 0.1\n' \
                'Uploads from CSV file to MySQL Database\n' \
@@ -31,17 +34,39 @@ table_name = 'users'
 
 def print_help(in_db_settings, in_file_settings):
     print(help_message)
+    sys.exit()
+
+
+def print_bye():
+    print(bye_message)
+
+
+def print_info():
+    print(info_message)
 
 
 def create_table(in_db_settings, in_file_settings):
-    print(info_message)
+    print_info()
     print(f'Creating Table for {in_db_settings}')
-    db = mysql.connect(
-        host=in_db_settings['-h'],
-        user=in_db_settings['-u'],
-        passwd=in_db_settings['-p']
-    )
-    print(db)
+    try:
+        db = mysql.connector.connect(
+            host=in_db_settings['-h'],
+            user=in_db_settings['-u'],
+            passwd=in_db_settings['-p'],
+            database=in_db_settings['-db'],
+            raise_on_warnings=True
+        )
+        cursor = db.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS ' + table_name +
+                       ' (name varchar(64), '
+                       'surname varchar(64), '
+                       'email varchar(64))')
+    except mysql.connector.Error as err:
+        print(err)
+    else:
+        db.close()
+    print_bye()
+    sys.exit()
 
 
 def error_message(err_type):
