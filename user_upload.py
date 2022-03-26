@@ -1,25 +1,77 @@
 import sys
-import resources.messages as m
 
 
 def print_help():
-    print(m.help_message)
+    help_message = 'File uploader version 0.1\n' \
+                   'Uploads from CSV file to MySQL Database\n' \
+                   'CSV file must contain user data and have three columns: name, ' \
+                   'surname, email\n' \
+                   'usage (separate value from directive name with space):\n' \
+                   '  --file [csv file name] – this is the name of the CSV to be ' \
+                   'parsed\n' \
+                   '  --create_table – this will cause the MySQL users table to be ' \
+                   'built (and no further\n' \
+                   '    action will be taken)\n' \
+                   '  --dry_run – this will be used with the --file directive in ' \
+                   'case we want to run the script but not\n' \
+                   '    insert into the DB. All other functions will be executed, ' \
+                   'but the database won\'t be altered\n' \
+                   '  -db – MySQL DataBase name\n' \
+                   '  -u – MySQL username\n' \
+                   '  -p – MySQL password\n' \
+                   '  -h – MySQL host\n' \
+                   '  --help – which will output the above list of directives with ' \
+                   'details.\n'
+    print(help_message)
 
 
 def create_table():
     print(f'Create Table')
 
 
+def error_message(err_type):
+    print(f'Error {err_type}')
+
+
+def dry_run():
+    print('dry_run')
+
+
+def set_host(arg,val):
+    print(f'arg: {arg}, val: {val}')
+
+
+def set_db(arg,val):
+    print(f'arg: {arg}, val: {val}')
+
+
+def set_user(arg,val):
+    print(f'arg: {arg}, val: {val}')
+
+
+def set_password(arg,val):
+    print(f'arg: {arg}, val: {val}')
+
+
 if __name__ == '__main__':
-    arg = sys.argv
-    try:
-        arg[1:].index('--help')
-        print_help()
-        sys.exit()
-    except ValueError:
-        pass
-    try:
-        arg[1:].index('--create_table')
-        create_table()
-    except ValueError:
-        pass
+    args = sys.argv
+    settings = {
+        '-db': set_db,
+        '-h': set_host,
+        '-u': set_user,
+        '-p': set_password
+    }
+    actions = {
+        '--help': print_help,
+        '--create_table': create_table,
+        '--dry_run': dry_run
+    }
+    for argument in args[1:]:
+        try:
+            settings[argument](argument, args[args.index(argument)+1])
+        except KeyError:
+            pass
+        except IndexError as err:
+            error_message(f'in Value of an argument {argument}: {err}')
+
+
