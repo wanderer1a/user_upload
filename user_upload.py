@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 import sys
 import mysql.connector #pip install mysql-connector-python-rf
 import csv
 import re
 
-info_message = 'File uploader version 1.0.1\n' \
+info_message = 'File uploader version 1.0.2\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'Run the script with --help key to get help\n'
 bye_message = 'Now exit. Bye.'
@@ -25,7 +26,7 @@ help_message = 'CSV file must contain user data and have three columns: name, ' 
                '  --help – which will output the above list of directives with ' \
                'details.\n'
 table_name = 'users'
-db_name = 'user_upload'
+db_name = 'upload_user'
 is_dry_run = False
 
 
@@ -90,6 +91,15 @@ def check_db_settings(in_db_settings):
     return is_settings
 
 
+def check_file_settings(in_file_settings):
+    is_settings = True
+    if '--file' in in_file_settings.keys():
+        pass
+    else:
+        is_settings = False
+    return is_settings
+
+
 def create_table(in_db_settings, in_file_settings):
     print('[MODE] create_table')
     if not check_db_settings(in_db_settings):
@@ -102,7 +112,7 @@ def create_table(in_db_settings, in_file_settings):
             user=in_db_settings['-u'],
             passwd=in_db_settings['-p'],
             database=db_name,
-            raise_on_warnings=True
+            raise_on_warnings=False
         )
         cursor = db.cursor()
         cursor.execute('DROP TABLE IF EXISTS ' + table_name)
@@ -235,5 +245,9 @@ if __name__ == '__main__':
             actions[argument](db_settings, file_settings)
         except KeyError:
             pass
-    csv_processing(file_settings)
+    if not (check_db_settings(db_settings) and check_file_settings(file_settings)):
+        print_info()
+        print_bye()
+    else:
+        csv_processing(file_settings)
 
