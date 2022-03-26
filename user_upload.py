@@ -3,7 +3,7 @@ import mysql.connector #pip install mysql-connector-python-rf
 import csv
 import re
 
-info_message = 'File uploader version 0.2\n' \
+info_message = 'File uploader version 1.0.0\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'Run the script with --help key to get help\n'
 bye_message = 'Now exit. Bye.'
