@@ -248,6 +248,9 @@ if __name__ == '__main__':
     if not (check_db_settings(db_settings) and check_file_settings(file_settings)):
         print_info()
         print_bye()
-    else:
+    elif check_file_settings(file_settings) and is_dry_run:
+        csv_processing(file_settings)
+    elif (check_db_settings(db_settings)
+          and check_file_settings(file_settings)):
         csv_processing(file_settings)
 
