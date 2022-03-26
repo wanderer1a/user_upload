@@ -78,3 +78,4 @@ venv
 /.idea/user_upload.iml
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
+/.idea/.gitignore
