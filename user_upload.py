@@ -87,6 +87,7 @@ def create_table(in_db_settings, in_file_settings):
             raise_on_warnings=True
         )
         cursor = db.cursor()
+        cursor.execute('DROP TABLE IF EXISTS ' + table_name)
         cursor.execute('CREATE TABLE IF NOT EXISTS ' + table_name +
                        ' (name varchar(64), '
                        'surname varchar(64), '
