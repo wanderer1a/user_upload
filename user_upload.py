@@ -71,7 +71,6 @@ def error_message(err_type):
 def dry_run(in_db_settings, in_file_settings):
     global is_dry_run
     is_dry_run = True
-    print('[MODE] dry_run')
 
 
 def check_db_settings(in_db_settings):
@@ -246,6 +245,7 @@ if __name__ == '__main__':
 
     if check_file_settings(file_settings) and is_dry_run:
         print_info()
+        print('[MODE] dry_run')
         csv_processing(file_settings)
         print_bye()
     if check_file_settings(file_settings) and check_db_settings(db_settings):
