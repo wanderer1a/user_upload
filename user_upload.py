@@ -32,6 +32,26 @@ db_name = 'user_upload'
 is_dry_run = False
 
 
+def set_host(arg, val):
+    return val
+
+
+def set_db(arg, val):
+    return val
+
+
+def set_user(arg, val):
+    return val
+
+
+def set_password(arg, val):
+    return val
+
+
+def set_file(arg, val):
+    return val
+
+
 def print_help(in_db_settings, in_file_settings):
     print(help_message)
     sys.exit()
@@ -44,6 +64,16 @@ def print_bye():
 
 def print_info():
     print(info_message)
+
+
+def error_message(err_type):
+    print(f'[ERROR] {err_type}')
+
+
+def dry_run(in_db_settings, in_file_settings):
+    global is_dry_run
+    is_dry_run = True
+    print('[MODE] dry_run')
 
 
 def create_table(in_db_settings, in_file_settings):
@@ -92,36 +122,6 @@ def insert_user(in_db_settings, in_data):
     else:
         db.commit()
         db.close()
-
-
-def error_message(err_type):
-    print(f'[ERROR] {err_type}')
-
-
-def dry_run(in_db_settings, in_file_settings):
-    global is_dry_run
-    is_dry_run = True
-    print('[MODE] dry_run')
-
-
-def set_host(arg, val):
-    return val
-
-
-def set_db(arg, val):
-    return val
-
-
-def set_user(arg, val):
-    return val
-
-
-def set_password(arg, val):
-    return val
-
-
-def set_file(arg, val):
-    return val
 
 
 def csv_processing(in_file_settings):
