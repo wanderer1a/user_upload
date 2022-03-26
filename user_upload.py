@@ -4,7 +4,7 @@ import mysql.connector #pip install mysql-connector-python-rf
 import csv
 import re
 
-info_message = 'File uploader version 1.0.2\n' \
+info_message = 'File uploader version 1.0.3\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'Run the script with --help key to get help\n'
 bye_message = 'Now exit. Bye.'
@@ -212,8 +212,6 @@ if __name__ == '__main__':
         '--dry_run': dry_run
     }
 
-    print_info()
-
     for argument in args[1:]:
         '''
         Find and launch functions from db_settings_routines to create
@@ -245,12 +243,16 @@ if __name__ == '__main__':
             actions[argument](db_settings, file_settings)
         except KeyError:
             pass
+
+    if check_file_settings(file_settings) and is_dry_run:
+        print_info()
+        csv_processing(file_settings)
+        print_bye()
+    if check_file_settings(file_settings) and check_db_settings(db_settings):
+        print_info()
+        csv_processing(file_settings)
+        print_bye()
     if not (check_db_settings(db_settings) and check_file_settings(file_settings)):
         print_info()
         print_bye()
-    elif check_file_settings(file_settings) and is_dry_run:
-        csv_processing(file_settings)
-    elif (check_db_settings(db_settings)
-          and check_file_settings(file_settings)):
-        csv_processing(file_settings)
 
