@@ -4,7 +4,7 @@ import mysql.connector #pip install mysql-connector-python-rf
 import csv
 import re
 
-info_message = 'File uploader version 1.0.3\n' \
+info_message = 'File uploader version 1.0.4\n' \
                'Uploads from CSV file to MySQL Database\n' \
                'Run the script with --help key to get help\n'
 bye_message = 'Now exit. Bye.'
@@ -73,7 +73,7 @@ def dry_run(in_db_settings, in_file_settings):
     is_dry_run = True
 
 
-def check_db_settings(in_db_settings):
+def check_db_settings(in_db_settings: dict):
     is_settings = True
     if '-h' in in_db_settings.keys():
         pass
@@ -91,18 +91,23 @@ def check_db_settings(in_db_settings):
 
 
 def check_file_settings(in_file_settings):
-    is_settings = True
+    is_settings = False
     if '--file' in in_file_settings.keys():
-        pass
-    else:
-        is_settings = False
+        is_settings = True
     return is_settings
 
 
-def create_table(in_db_settings, in_file_settings):
+def create_table(in_db_settings: dict, in_file_settings):
+    """
+    :param in_db_settings: dictionary with settings to connect
+    :param in_file_settings: not used
+    :return:
+
+    Creates table to insert users. Recreates if table already exists.
+    """
     print('[MODE] create_table')
     if not check_db_settings(in_db_settings):
-        print(f'[ERROR] db_settings is bad: {in_db_settings}')
+        print(f'[ERROR] db_settings are bad: {in_db_settings}')
         print_bye()
     print(f'[INFO] Creating Table {table_name} for {in_db_settings}, db: {db_name}')
     try:
@@ -127,7 +132,14 @@ def create_table(in_db_settings, in_file_settings):
     print_bye()
 
 
-def insert_user(in_db_settings, in_data):
+def insert_user(in_db_settings: dict, in_data: list):
+    """
+    :param in_db_settings: dictionary with settings to connect
+    :param in_data: name, surname, email of user
+    :return:
+
+    Inserts user into table.
+    """
     print(f'[INFO] Inserting user {in_data}')
     try:
         db = mysql.connector.connect(
@@ -150,16 +162,16 @@ def insert_user(in_db_settings, in_data):
         db.close()
 
 
-def csv_processing(in_file_settings):
-    '''
-    :param in_file_settings:
+def csv_processing(in_file_settings: dict):
+    """
+    :param in_file_settings: dictionary with file path and name
     :return:
 
     Processing of csv with 3 columns (name, sirname, email).
     Titles name, sirname.
     Translates email to a lower case
     Check email trowgh regexp
-    '''
+    """
     if not is_dry_run:
         print('[MODE] csv processing and insert to database')
     email_regex = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b")
@@ -235,14 +247,16 @@ if __name__ == '__main__':
         except IndexError as err:
             error_message(f'in Value of an argument {argument}: {err}')
     '''
-    Find and launch actions with settings
+    Find and launch actions with settings. Dry_run just make a trigger variable to True.
     '''
     for argument in args[1:]:
         try:
             actions[argument](db_settings, file_settings)
         except KeyError:
             pass
-
+    '''
+    Fire processing the file
+    '''
     if check_file_settings(file_settings) and is_dry_run:
         print_info()
         print('[MODE] dry_run')
@@ -255,4 +269,3 @@ if __name__ == '__main__':
     if not (check_db_settings(db_settings) and check_file_settings(file_settings)):
         print_info()
         print_bye()
-
