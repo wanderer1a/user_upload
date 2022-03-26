@@ -1,4 +1,6 @@
 import sys
+#pip install mysql-connector-python-rf
+import mysql.connector as mysql
 
 info_message = 'File uploader version 0.1\n' \
                'Uploads from CSV file to MySQL Database\n' \
@@ -24,22 +26,29 @@ help_message = 'File uploader version 0.1\n' \
                '  -h – MySQL host\n' \
                '  --help – which will output the above list of directives with ' \
                'details.\n'
+table_name = 'users'
 
 
-def print_help():
+def print_help(in_db_settings, in_file_settings):
     print(help_message)
 
 
-def create_table():
+def create_table(in_db_settings, in_file_settings):
     print(info_message)
-    print(f'Create Table')
+    print(f'Creating Table for {in_db_settings}')
+    db = mysql.connect(
+        host=in_db_settings['-h'],
+        user=in_db_settings['-u'],
+        passwd=in_db_settings['-p']
+    )
+    print(db)
 
 
 def error_message(err_type):
     print(f'Error {err_type}')
 
 
-def dry_run():
+def dry_run(in_db_settings, in_file_settings):
     print(info_message)
     print('dry_run')
 
@@ -83,10 +92,18 @@ if __name__ == '__main__':
         '--dry_run': dry_run
     }
     for argument in args[1:]:
+        '''
+        Find and launch functions from db_settings_routines to create
+        db settings dictionary
+        '''
         try:
             db_settings[argument] = db_settings_routines[argument](argument,
                                                                    args[args.index(argument) + 1])
         except KeyError:
+            '''
+            Find and launch functions from file_settings_routines to create
+            file settings dictionary
+            '''
             try:
                 file_settings[argument] = file_settings_routines[argument](argument,
                                                                            args[args.index(
@@ -97,10 +114,12 @@ if __name__ == '__main__':
                 error_message(f'in Value of an argument {argument}: {err}')
         except IndexError as err:
             error_message(f'in Value of an argument {argument}: {err}')
-
+    '''
+    Find and launch actions with settings
+    '''
     for argument in args[1:]:
         try:
-            actions[argument]()
+            actions[argument](db_settings, file_settings)
         except KeyError:
             pass
 
