@@ -51,13 +51,18 @@ Run in a console "cd [X]:\some\directory" and run script with command "python .\
 </li>
 
 <p>
-usage (separate value from directive name with space):
-  --file [csv file name] – this is the name of the CSV to be parsed
+<b>Usage</b><br> 
+<br>
+./user_upload.py --file ./some/directory/users.csv -h MySql_host -u upload_user -p upload_user_password<br>
+<br>
+Separate value from directive name with space<br>
+  --file [csv file name] – this is the name of the CSV to be parsed<br>
   --create_table – this will cause the MySQL "users" table to be built (and no further
-    action will be taken)
-  --dry_run – this will be used with the --file directive in case we want to run the script but notinsert into the DB. All other functions will be executed, but the database won't be altered
-  -u [user] – MySQL username
-  -p [password] – MySQL password
-  -h [hostname or IP address] – MySQL host
-  --help – which will output the above list of directives with details.
+    action will be taken)<br>
+  --dry_run – this will be used with the --file directive in case we want to run the script but 
+notinsert into the DB. All other functions will be executed, but the database won't be altered<br>
+  -u [user] – MySQL username<br>
+  -p [password] – MySQL password<br>
+  -h [hostname or IP address] – MySQL host<br>
+  --help – which will output the above list of directives with details.<br>
 </p>
